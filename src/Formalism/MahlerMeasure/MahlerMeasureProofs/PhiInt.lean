@@ -154,23 +154,11 @@ open MvPolynomial Finset
 section
 variable {p : ℕ} [hp : Fact p.Prime] {σ : Type}
 
-theorem pderiv_comm' (i j : σ) (f : MvPolynomial σ ℚ_[p]) :
-    pderiv i (pderiv j f) = pderiv j (pderiv i f) := by
-  classical
-  induction f using MvPolynomial.induction_on with
-  | C a => simp
-  | add f g hf hg => simp only [map_add (f := _), hf, hg]
-  | mul_X f k ih =>
-    have h0 : ∀ a b : σ, pderiv a ((Pi.single b (1 : MvPolynomial σ ℚ_[p]) : σ → MvPolynomial σ ℚ_[p]) k) = 0 := by
-      intro a b; rw [Pi.single_apply]; split_ifs <;> simp
-    simp only [Derivation.leibniz, map_add (f := _), pderiv_X, smul_eq_mul, ih, h0]
-    ring
-
 theorem commute_pderiv (i j : σ) :
     Commute (pderiv i : Derivation ℚ_[p] (MvPolynomial σ ℚ_[p]) (MvPolynomial σ ℚ_[p])).toLinearMap
       (pderiv j).toLinearMap := by
   refine LinearMap.ext fun f => ?_
-  simpa using pderiv_comm' i j f
+  simpa using _root_.MvPolynomial.pderiv_comm i j f
 
 theorem pderiv_pow_monomial (i : σ) (s : ℕ) (m : σ →₀ ℕ) (a : ℚ_[p]) :
     (((pderiv i : Derivation ℚ_[p] (MvPolynomial σ ℚ_[p]) (MvPolynomial σ ℚ_[p])).toLinearMap ^ s)
